@@ -163,7 +163,6 @@ Actividad 4:
 Sitúa el TextField en el centro de la pantalla y haz que reemplace el valor de una coma por un punto
 y que no deje escribir más de un punto decimal...
 */
-@Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Actividad4() {
@@ -193,19 +192,40 @@ fun Actividad4() {
 
 /*
 Actividad 5:
-Haz lo mismo, pero elevando el estado a una función superior y usando un componente OutlinedTextField
-al que debes añadir un padding alrededor de 15 dp y establecer colores diferentes en los bordes
-cuando tenga el foco y no lo tenga.
+Hecho :
 A nivel funcional no permitas que se introduzcan caracteres que invaliden un número decimal.
+
+Por hacer :
+Haz lo mismo, pero elevando el estado a una función superior
+usando un componente OutlinedTextField al que debes añadir un padding alrededor de 15 dp
+y establecer colores diferentes en los bordes cuando tenga el foco y no lo tenga.
+
 */
+@Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Actividad5() {
     var myVal by rememberSaveable { mutableStateOf("") }
 
-    OutlinedTextField(
-        value = myVal,
-        onValueChange = { myVal = it },
-        label = { Text(text = "Importe") }
-    )
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        OutlinedTextField(
+            value = myVal,
+            onValueChange = { newValue ->
+                val filteredValue = newValue.filter { it.isDigit() || it == '.' || it == ',' }
+
+                val commaChanger = filteredValue.replace(',', '.')
+
+                val dotCounter = commaChanger.count { it == '.' } > 1
+
+                if (!dotCounter){
+                    myVal = commaChanger
+                }
+            },
+            label = { Text(text = "Importe") }
+        )
+    }
 }
